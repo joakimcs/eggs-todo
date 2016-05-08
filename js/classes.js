@@ -5,6 +5,7 @@
 var eggsTodo = eggsTodo || {};
 eggsTodo.class = eggsTodo.class || {};
 
+
 /**
  * App class
  * For objects storing app data; list_id
@@ -12,28 +13,35 @@ eggsTodo.class = eggsTodo.class || {};
 
 eggsTodo.class.App = function (appObject) {
 	
+	
+	/**
+	 * Properties/Constructor
+	 */
+
 	this.lists = [];
 
-	// Methods
-	this.loadContent = function (appObject) {
-		
-		// console.log('loadContent(' + appObject + ')');
 
+	/**
+	 * Methods
+	 */
+
+	this.loadContent = function (appObject) {
 		this.lists = [];
 		for (var i = 0, len = appObject.length; i < len; i++) {
 			this.lists.push(new eggsTodo.class.List(appObject[i]));
 		}
-		eggsTodo.view.renderApp(this);		
+		eggsTodo.view.renderApp(this);	
 	}
 
 	this.addList = function (listObject) {
+		
+		// If no listObject passed, create one
+		if (listObject === undefined) {
+			var listObject = new eggsTodo.class.List();
+		}
 		this.lists.unshift(listObject);
 		eggsTodo.view.renderApp();
-		return true;
-	}
-
-	this.getLists = function () { // Needed?
-		return this.lists;
+		return listObject;
 	}
 
 	this.getList = function (listId) {
@@ -53,6 +61,10 @@ eggsTodo.class.App = function (appObject) {
 		}
 		return false;
 	}
+
+	this.getLists = function () { // Needed?
+		return this.lists;
+	}
 };
 
 
@@ -63,7 +75,11 @@ eggsTodo.class.App = function (appObject) {
 
 eggsTodo.class.List = function (listObject) {
 	
-	// Getters and setters (ES5)
+	/**
+	 * Propertise 
+	 * ES5 Getters and setters
+	 */
+
 	Object.defineProperties(this, {
         "id": {
         	"get": function() { 
@@ -84,40 +100,51 @@ eggsTodo.class.List = function (listObject) {
         }
     });
 
-	// Construtor
+	
+	/**
+	 * Constructor
+	 */
+	
 	// Create new ...
 	if (listObject == undefined) {
 		this.tasks = [];
 		this._id = Date.now();
 		this._description = "";
 	}
-	// ... or build form passed object
+	// ... or try to build from passed object
 	else {
 		try {
 			this.tasks = [];
 			this._id = listObject.id;
 			this._description = listObject.description;
 			for (var i = 0, len = listObject.tasks.length; i < len; i++) {	
-				this.tasks.push(new eggsTodo.class.Task(listObject.tasks[i]));
+				this.tasks.push(new eggsTodo.class.Task(listObject.tasks[i], this.id));
 			}
-			// eggsTodo.view.renderList(this.id);
-			// console.log('Created list');
+			eggsTodo.view.renderList(this.id);
+
 		}
 		catch(err) {
-			console.log('List creation error');
+			console.log('List creation error. Empty list created');
+			this.tasks = [];
+			this._id = Date.now();
+			this._description = "";
 			return false;
 		}
 	}
 
-	// Methods
-	this.addTask = function (taskObject) {
-		this.tasks.unshift(taskObject);
-		eggsTodo.view.renderList(this.id);
-		return true;
-	}
+	/**
+	 * Methods
+	 */
 
-	this.getTasks = function () { // Needed?
-		return this.tasks;
+	this.addTask = function (taskObject) {
+		
+		// If no task object passed, create one
+		if (taskObject === undefined) {
+			var taskObject = new eggsTodo.class.Task(undefined, this.id);
+		}	
+		this.tasks.push(taskObject);
+		eggsTodo.view.renderList(this.id);
+		return taskObject;
 	}
 	
 	this.getTask = function (taskId) {
@@ -138,6 +165,10 @@ eggsTodo.class.List = function (listObject) {
 		}
 		return false;
 	}
+
+	this.getTasks = function () { // Needed?
+		return this.tasks;
+	}
 };
 
 
@@ -146,13 +177,25 @@ eggsTodo.class.List = function (listObject) {
  * For objects storing task data; id, description, done
  */
 
-eggsTodo.class.Task = function (taskObject) {
+eggsTodo.class.Task = function (taskObject, parentListId) {
 
-	// Getters and setters (ES5)
+	/**
+	 * Properties
+	 * Using ES5 Getters and setters
+	 */
+
 	Object.defineProperties(this, {
         "id": {
         	"get": function() { 
 				return this._id;
+			},
+			"set": function(value) { 
+				return false;
+			}
+        },
+        "parentListId": {
+        	"get": function() { 
+				return this._parentListId;
 			},
 			"set": function(value) { 
 				return false;
@@ -164,7 +207,7 @@ eggsTodo.class.Task = function (taskObject) {
 			},
 			"set": function(value) { 
 				this._description = value;
-				eggsTodo.view.renderTask(this.id);
+				eggsTodo.view.renderTask(this.parentListId, this.id);
 			}
         },
         "done": {
@@ -173,37 +216,43 @@ eggsTodo.class.Task = function (taskObject) {
 			},
 			"set": function(value) { 
 				this._done = value;
-				eggsTodo.view.renderTask(this.id);
+				eggsTodo.view.renderTask(this.parentListId, this.id);
 			}
         }
     });
 
+	/**
+	 * Constructor
+	 */
 
-	// Constructor
+	 
+	
 	// Create new ...
 	if (taskObject == undefined) {	
 		this._id = Date.now();
+		this._parentListId = parentListId;
 		this._description = "";
 		this._done = false;
 	}
-	// ... or build from passed object
+	// ... or try to build from passed object
 	else {
 		try {
 			this._id = taskObject.id;
+			this._parentListId = parentListId;
 			this._description = taskObject.description;
 			this._done = taskObject.done;
-			eggsTodo.view.renderTask(taskObject.id);
+			eggsTodo.view.renderTask(this.parentListId, taskObject.id);
 		}
 		catch(err) {
-			console.log('Task creation error');
+			console.log('Task creation error. Empty task created:' + err);
+			this._id = Date.now();
+			this._parentListId = parentListId;
+			this._description = "";
+			this._done = false;
 			return false;
 		}
 	}
 
-
-	// TODO: Try/catch create list based on passed object
-
-	
 };
 
 
@@ -213,6 +262,9 @@ eggsTodo.class.Task = function (taskObject) {
  */
 
 eggsTodo.class.Storage = function () {
+
+
+	// TODO: Get real data
 
 	this.getData = function () {
 		return [

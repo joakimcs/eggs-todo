@@ -114,8 +114,6 @@ QUnit.test( "Overall data model test", function( assert ) {
 		]
 	);
 
-	console.log (testApp.lists);
-
 	assert.ok( testApp.lists, "An app object can be created based on passed json data");
 	assert.deepEqual ( testApp.lists[0].id, 123, "Sample list id is verified in object data" );
 	assert.deepEqual ( testApp.lists[0].tasks[0].id, 321, "Sample task id is verified in object data" );
@@ -128,7 +126,8 @@ QUnit.test( "Overall data model test", function( assert ) {
 
 
 /*
-QUnit.test( "View render test", function( assert ) {
+QUnit.test( "UI interaction test", function( assert ) {
 
 });
 */
+

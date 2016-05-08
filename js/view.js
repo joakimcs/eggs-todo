@@ -35,7 +35,7 @@ eggsTodo.class.View = function () {
 
 		// Add list
 		listNode = document.createElement('li');
-		// listNode.id = "list" + eggsTodo.app.lists[i].id;	
+		listNode.id = "listadderwrapper";	
 		appWrapper.appendChild(listNode);
 		
 		listNodeHeader = document.createElement('button');
@@ -95,62 +95,160 @@ eggsTodo.class.View = function () {
 
 		}
 
-		
-
-
-		console.log('App rendered');
+		// console.log('App rendered');
 		return true;
 	}
 
 	this.renderList = function (id) {
 		
-		console.log('renderList(' + id + ')')
+		// console.log('renderList(' + id + ')');
 
+		// Check if list node exists, and refresh if so
+		if (listNode = document.getElementById('list_' + id)) {
+			
+			while (listNode.firstChild) {
+				listNode.removeChild(listNode.firstChild);
+			}
 
-
-
-		/*
-		console.log('renderList(' + id + ')')
-
-		// Declare variables
-		var listNode, taskWrapper, taskNode;
-
-		// Check if list exists
-		if (listNode = document.getElementById('list' + id)) {
+			var listItem = eggsTodo.app.getList(Number(id));
 		
-			// Check if task wrapper exists and empty
-			if (taskWrapper = document.getElementById('taskwrapper' + id)) {
-				// Clear task wrapper
-				while (taskWrapper.firstChild) {
-					taskWrapper.removeChild(taskWrapper.firstChild);
-				}
-			}
-			// Create if not
-			else {
-				taskWrapper = document.createElement('ul');
-				taskWrapper.id = 'taskwrapper' + id;
+			listNodeHeader = document.createElement('h2');
+			listNodeHeader.id = 'listdescription_' + listItem.id;
+			listNodeHeader.className = 'listdescription';
+			listNodeHeader.innerHTML = listItem.description;
+			listNode.appendChild(listNodeHeader);
+
+			taskWrapper = document.createElement('ul');
+			taskWrapper.className = 'taskwrapper';
+			listNode.appendChild(taskWrapper);
+
+			for (var ii = 0, taskLength = listItem.tasks.length; ii < taskLength; ii++ ) {
+				
+				taskNode = document.createElement('li');
+				taskNode.id = 'task_' + listItem.id + '_' + listItem.tasks[ii].id;
+				taskNode.className = 'task';
+				taskWrapper.appendChild(taskNode);
+
+				taskCheckBox = document.createElement('input');
+				taskCheckBox.id = 'checkbox_' + listItem.id + '_' + listItem.tasks[ii].id;
+				taskCheckBox.className = 'checkbox';
+				taskCheckBox.type = 'checkbox';
+				taskCheckBox.checked = listItem.tasks[ii].done;
+					
+				taskNode.appendChild(taskCheckBox);
+
+				taskDescription = document.createElement('span');
+				taskDescription.id = 'taskdescription_' + listItem.id + '_' + listItem.tasks[ii].id;
+				taskDescription.className = 'taskdescription';
+				taskNode.appendChild(taskDescription);
+				taskDescription.innerHTML = listItem.tasks[ii].description;
+
 			}
 
+			// Add todo
 			taskNode = document.createElement('li');
-			taskNode.innerHTML = "Hepp!";
 			taskWrapper.appendChild(taskNode);
 
-			listNode.appendChild(taskWrapper);
-			console.log (listNode);
-			console.log('List rendered');
-			return true;
-
+			taskAdder = document.createElement('a');
+			taskAdder.id = 'taskadder_' + listItem.id;
+			taskAdder.className = 'taskadder';
+			taskAdder.innerHTML = 'Add todo';
+			taskNode.appendChild(taskAdder);
 		}
-		// If no such list
-		else {
-
-			console.log('No such list');
-			return false;
-		}
-		*/
 	}
 
-	this.renderTask = function (id) {
+	this.renderTask = function (listId, taskId) {	
 
+		// console.log('Getting task_' + listId + '_' + taskId);
+		
+		if (taskNode = document.getElementById('task_' + listId + '_' + taskId)) {
+
+			while (taskNode.firstChild) {
+				taskNode.removeChild(taskNode.firstChild);
+			}
+
+			var taskItem = eggsTodo.app.getList(listId).getTask(taskId);
+
+			taskCheckBox = document.createElement('input');
+			taskCheckBox.id = 'checkbox_' + listId + '_' + taskId;
+			taskCheckBox.className = 'checkbox';
+			taskCheckBox.type = 'checkbox';
+			taskCheckBox.checked = taskItem.done;
+				
+			taskNode.appendChild(taskCheckBox);
+
+			taskDescription = document.createElement('span');
+			taskDescription.id = 'taskdescription_' + listId + '_' + taskId;
+			taskDescription.className = 'taskdescription';
+			taskNode.appendChild(taskDescription);
+			taskDescription.innerHTML = taskItem.description;
+		}
 	}
+}
+
+/**
+ * Input view components class
+ */
+
+eggsTodo.class.Input = function () {
+
+	this.showNewListInput = function() {
+		// console.log('showNewListInput');
+		input = document.createElement('input');
+		input.className = 'listadderinput';
+		input.type = "text";
+		document.getElementById('listadderwrapper').appendChild(input);
+		input.focus();
+		input.onblur = function(e) {
+			this.parentNode.removeChild(this);
+		}
+	}
+
+	this.showListDescriptionInput = function(targetNode) {
+		var part = targetNode.id.split('_');
+		targetNode.style.display = 'none';
+		input = document.createElement('input');
+		input.id = 'listdescriptioninput_' + part[1];
+		input.className = 'listdescriptioninput';
+		input.value = targetNode.innerHTML;
+		targetNode.parentNode.insertBefore(input, targetNode);
+		input.focus();
+		input.select();
+		input.onblur = function(e) {
+			this.parentNode.removeChild(this);
+		}
+	};
+
+	this.showTaskDescriptionInput = function(targetNode) {
+		var part = targetNode.id.split('_');
+		targetNode.style.display = 'none';
+		input = document.createElement('input');
+		input.id = 'taskdescriptioninput_' + part[1] + '_' + part[2];
+		input.className = 'taskdescriptioninput';
+		input.value = targetNode.innerHTML;
+		targetNode.parentNode.insertBefore(input, targetNode);
+		input.focus();
+		input.select();
+		input.onblur = function(e) {
+			this.parentNode.removeChild(this);
+			targetNode.style.display = 'block';
+		}
+	};
+
+	this.showNewTaskInput = function(targetNode) {
+		var part = targetNode.id.split('_');
+		targetNode.style.display = 'none';
+		input = document.createElement('input');
+		input.id = 'newtaskinput_' + part[1] + '_' + part[2];
+		input.className = 'newtaskinput';
+		input.value = targetNode.innerHTML;
+		targetNode.parentNode.insertBefore(input, targetNode);
+		input.focus();
+		input.select();
+		input.onblur = function(e) {
+			this.parentNode.removeChild(this);
+			targetNode.style.display = 'block';
+		}
+	};
+
 }
