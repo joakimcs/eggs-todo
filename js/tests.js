@@ -64,7 +64,8 @@ QUnit.test( "Task creation and manipulation test", function( assert ) {
 
 QUnit.test( "Overall data model test", function( assert ) {
 	// Test app object from data object
-	var testApp = new eggsTodo.class.App(
+	var testApp = new eggsTodo.class.App();
+	testApp.loadContent(
 		[
 			{
 				"id" : 123,
@@ -112,10 +113,22 @@ QUnit.test( "Overall data model test", function( assert ) {
 			}
 		]
 	);
-	assert.ok( testApp.lists, "An app object can be created based on passed json data" );
+
+	console.log (testApp.lists);
+
+	assert.ok( testApp.lists, "An app object can be created based on passed json data");
 	assert.deepEqual ( testApp.lists[0].id, 123, "Sample list id is verified in object data" );
 	assert.deepEqual ( testApp.lists[0].tasks[0].id, 321, "Sample task id is verified in object data" );
 
 	assert.deepEqual ( testApp.getList(123).description, "Liste 1", "Verified list description using getList method" );
 	assert.deepEqual ( testApp.getList(123).getTask(321).description, "Oppgave 1", "Verified task description using linked getList/getTask method" );
+
 });
+
+
+
+/*
+QUnit.test( "View render test", function( assert ) {
+
+});
+*/

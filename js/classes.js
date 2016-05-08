@@ -12,28 +12,23 @@ eggsTodo.class = eggsTodo.class || {};
 
 eggsTodo.class.App = function (appObject) {
 	
-	// Properties
-	if (appObject == undefined) {
-		this.lists = [];
-	}
-	else {
-		try {
-			this.lists = [];
-			for (var i = 0, len = appObject.length; i < len; i++) {
-				this.lists.push(new eggsTodo.class.List(appObject[i]));
-			}
-		}
-		catch(err) {
-			return false;
-		}
-	}
-
-	// TODO: Try/catch create app based on passed object
+	this.lists = [];
 
 	// Methods
+	this.loadContent = function (appObject) {
+		
+		// console.log('loadContent(' + appObject + ')');
+
+		this.lists = [];
+		for (var i = 0, len = appObject.length; i < len; i++) {
+			this.lists.push(new eggsTodo.class.List(appObject[i]));
+		}
+		eggsTodo.view.renderApp(this);		
+	}
+
 	this.addList = function (listObject) {
 		this.lists.unshift(listObject);
-		eggsTodo.view.render();
+		eggsTodo.view.renderApp();
 		return true;
 	}
 
@@ -52,7 +47,7 @@ eggsTodo.class.App = function (appObject) {
 	this.removeList = function (listId) {
 		for (var i = 0, len = this.lists.length; i < len; i++) {
 		    if (this.lists[i].id === listId) {
-		    	eggsTodo.view.render();
+		    	eggsTodo.view.renderApp();
 		    	return this.lists.splice(i, 1);
 		    }
 		}
@@ -68,29 +63,6 @@ eggsTodo.class.App = function (appObject) {
 
 eggsTodo.class.List = function (listObject) {
 	
-	// Properties
-	if (listObject == undefined) {
-		this.tasks = [];
-		this._id = Date.now();
-		this._description = "";
-	}
-	else {
-		try {
-			this.tasks = [];
-			this._id = listObject.id;
-			this._description = listObject.description;
-			for (var i = 0, len = listObject.tasks.length; i < len; i++) {	
-				this.tasks.push(new eggsTodo.class.Task(listObject.tasks[i]));
-			}
-		}
-		catch(err) {
-			console.log('List creation error');
-			return false;
-		}
-	}
-
-	// TODO: Try/catch create list based on passed object
-
 	// Getters and setters (ES5)
 	Object.defineProperties(this, {
         "id": {
@@ -107,15 +79,40 @@ eggsTodo.class.List = function (listObject) {
 			},
 			"set": function(value) { 
 				this._description = value;
-				eggsTodo.view.render();
+				eggsTodo.view.renderList(this.id);
 			}
         }
     });
 
+	// Construtor
+	// Create new ...
+	if (listObject == undefined) {
+		this.tasks = [];
+		this._id = Date.now();
+		this._description = "";
+	}
+	// ... or build form passed object
+	else {
+		try {
+			this.tasks = [];
+			this._id = listObject.id;
+			this._description = listObject.description;
+			for (var i = 0, len = listObject.tasks.length; i < len; i++) {	
+				this.tasks.push(new eggsTodo.class.Task(listObject.tasks[i]));
+			}
+			// eggsTodo.view.renderList(this.id);
+			// console.log('Created list');
+		}
+		catch(err) {
+			console.log('List creation error');
+			return false;
+		}
+	}
+
 	// Methods
-	this.addTask = function (object) {
-		this.tasks.unshift(object);
-		eggsTodo.view.render();
+	this.addTask = function (taskObject) {
+		this.tasks.unshift(taskObject);
+		eggsTodo.view.renderList(this.id);
 		return true;
 	}
 
@@ -123,19 +120,19 @@ eggsTodo.class.List = function (listObject) {
 		return this.tasks;
 	}
 	
-	this.getTask = function (id) {
+	this.getTask = function (taskId) {
 		for (var i = 0, len = this.tasks.length; i < len; i++) {
-		    if (this.tasks[i].id === id) {
+		    if (this.tasks[i].id === taskId) {
 		    	return this.tasks[i];
 		    }
 		}
 		return false;
 	}
 
-	this.removeTask = function (id) {
+	this.removeTask = function (taskId) {
 		for (var i = 0, len = this.tasks.length; i < len; i++) {
-		    if (this.tasks[i].id === id) {
-		    	eggsTodo.view.render();
+		    if (this.tasks[i].id === taskId) {
+		    	eggsTodo.view.renderList(this.id);
 		    	return this.tasks.splice(i, 1);
 		    }
 		}
@@ -151,27 +148,6 @@ eggsTodo.class.List = function (listObject) {
 
 eggsTodo.class.Task = function (taskObject) {
 
-	// Properties
-	if (taskObject == undefined) {	
-		this._id = Date.now();
-		this._description = "";
-		this._done = false;
-	}
-	else {
-		try {
-			this._id = taskObject.id;
-			this._description = taskObject.description;
-			this._done = taskObject.done;
-		}
-		catch(err) {
-			console.log('Task creation error');
-			return false;
-		}
-	}
-
-
-	// TODO: Try/catch create list based on passed object
-
 	// Getters and setters (ES5)
 	Object.defineProperties(this, {
         "id": {
@@ -188,7 +164,7 @@ eggsTodo.class.Task = function (taskObject) {
 			},
 			"set": function(value) { 
 				this._description = value;
-				eggsTodo.view.render();
+				eggsTodo.view.renderTask(this.id);
 			}
         },
         "done": {
@@ -197,10 +173,37 @@ eggsTodo.class.Task = function (taskObject) {
 			},
 			"set": function(value) { 
 				this._done = value;
-				eggsTodo.view.render();
+				eggsTodo.view.renderTask(this.id);
 			}
         }
     });
+
+
+	// Constructor
+	// Create new ...
+	if (taskObject == undefined) {	
+		this._id = Date.now();
+		this._description = "";
+		this._done = false;
+	}
+	// ... or build from passed object
+	else {
+		try {
+			this._id = taskObject.id;
+			this._description = taskObject.description;
+			this._done = taskObject.done;
+			eggsTodo.view.renderTask(taskObject.id);
+		}
+		catch(err) {
+			console.log('Task creation error');
+			return false;
+		}
+	}
+
+
+	// TODO: Try/catch create list based on passed object
+
+	
 };
 
 
@@ -223,7 +226,7 @@ eggsTodo.class.Storage = function () {
 						"done" : false
 					},
 					{
-						"id" : 123,
+						"id" : 124,
 						"description" : "Oppgave 2",
 						"done" : true
 					}
