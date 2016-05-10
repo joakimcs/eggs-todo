@@ -1,0 +1,178 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700);
+
+body {
+	background-color: #262626;
+}
+
+#app {
+	width: 80%;
+	max-width: 320px;
+	
+	padding: 5% 5% 10%;
+	overflow: auto;
+	font-family: 'Open Sans', sans-serif;
+
+}
+
+	#app h1, 
+	#app h2 {
+		position: relative;
+		width: 100%;
+		font-weight: 300;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		color: #bebebe;
+	}
+
+		#app h1 span {
+			position: relative;
+			float: left;
+		}
+
+		#app h1 button {
+		    position: relative;
+		    float: left;
+		    background: #414141;
+		    background-image: -webkit-linear-gradient(top, #575757, #414141);
+		    background-image: -moz-linear-gradient(top, #575757, #414141);
+		    background-image: -ms-linear-gradient(top, #575757, #414141);
+		    background-image: -o-linear-gradient(top, #575757, #414141);
+		    background-image: linear-gradient(to bottom, #575757, #414141);
+		    text-shadow: 0px 1px 0px #414141;
+		    -webkit-box-shadow: 0px 1px 0px 414141;
+		    -moz-box-shadow: 0px 1px 0px 414141;
+		    box-shadow: 0px 1px 0px 414141;
+		    color: #bebebe;
+		    text-decoration: none;
+		    margin: 0 auto;
+		    -webkit-border-radius: 4;
+		    -moz-border-radius: 4;
+		    border-radius: 4px;
+		    margin: 12px 0 0 13px;
+		    padding: 3px 11px;
+		    /* font-family: "Signika Negative",sans-serif; */
+		    text-transform: uppercase;
+		    font-weight: 700;
+		    display: table;
+		    cursor: pointer;
+		    font-size: 0.35em;
+		    line-height: 18px;
+		    border-width: 0;
+		}
+
+	#app ul {
+		position: relative;
+		clear: both;
+		width: 100%;
+		list-style-type: none;
+		padding: 0;
+	}
+
+		#app li.list,
+		#app input.listadderinput {
+			position: relative;
+			float: left;
+			width: 100%;
+			margin: 20px 0 0 0;
+		}
+
+		
+
+		#app input.listadderinput,
+		#app input.listdescriptioninput,
+		#app input.taskdescriptioninput,
+		#app input.newtaskinput {
+			outline: none;
+			border: none;
+			background-color: #bebebe;
+			color: #262626;
+			-webkit-border-radius: 4;
+		    -moz-border-radius: 4;
+		    border-radius: 4px;
+		}
+
+		#app h2.listdescription {
+			height: 34px;
+		}
+
+		#app h2.listdescription:hover {
+			color: #eeeeee;
+		}
+
+		#app input.listdescriptioninput {
+			height: 31.5px;
+			font-size: 22px;
+		}
+
+			#app li.list ul li {
+				margin: 5px 0 0 0;
+				height: 19px;
+				width: 100%;
+			}
+
+			#app li.task,
+			#app li .taskadder {
+				font-size: 0.85em;
+				color: #bebebe;
+			}
+
+			#app input.taskdescriptioninput,
+			#app input.newtaskinput {
+				font-size: 13px;
+			}
+
+			#app li.task:hover,
+			#app li .taskadder:hover {
+				color: #eeeeee;
+			}
+
+			#app input[type="checkbox"] {
+				margin-right: 10px;
+			}
+			
+			#app button.listdeleter,
+			#app button.taskdeleter {
+			    opacity: 0;
+			    position: relative;
+			    float: right;
+			    background: #414141;
+			    background-image: -webkit-linear-gradient(top, #575757, #414141);
+			    background-image: -moz-linear-gradient(top, #575757, #414141);
+			    background-image: -ms-linear-gradient(top, #575757, #414141);
+			    background-image: -o-linear-gradient(top, #575757, #414141);
+			    background-image: linear-gradient(to bottom, #575757, #414141);
+			    text-shadow: 0px 1px 0px #414141;
+			    -webkit-box-shadow: 0px 1px 0px 414141;
+			    -moz-box-shadow: 0px 1px 0px 414141;
+			    box-shadow: 0px 1px 0px 414141;
+			    color: #bebebe;
+			    text-decoration: none;
+			    margin: 0 auto;
+			    -webkit-border-radius: 4;
+			    -moz-border-radius: 4;
+			    border-radius: 4px;
+			    margin: 0;
+			    padding: 0px 7px;
+			    /* font-family: "Signika Negative",sans-serif; */
+			    text-transform: uppercase;
+			    font-weight: 700;
+			    display: table;
+			    cursor: pointer;
+			    font-size: 8px;
+			    line-height: 18px;
+			    border-width: 0;
+			}
+
+			#app button.listdeleter {
+				margin-top: 8px;
+			}
+
+			#app li.list h2:hover button.listdeleter,
+			#app li.task:hover button.taskdeleter {
+				opacity: 1;
+			}
+
+
+
+			

@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
 				eggsTodo.input.showListDescriptionInput(e.target);
 				break;
 
+			case 'listdeleter' :	
+				part = e.target.id.split('_');
+				eggsTodo.app.removeList(Number(part[1]));
+				break;
+
 			case 'checkbox' :
 				part = e.target.id.split('_');
 				eggsTodo.app.getList(Number(part[1])).getTask(Number(part[2])).done = e.target.checked;
@@ -49,11 +54,15 @@ document.addEventListener("DOMContentLoaded", function() {
 				eggsTodo.input.showNewTaskInput(e.target);
 				break;
 
+			case 'taskdeleter' :	
+				part = e.target.id.split('_');
+				eggsTodo.app.getList(Number(part[1])).removeTask(Number(part[2]));
+				break;
+
 		}
 	}
 
 	eggsTodo.view.appNode.onkeydown = function(e) {
-		console.log(e.target);
 
 		switch (e.target.className) {
 
@@ -86,6 +95,8 @@ document.addEventListener("DOMContentLoaded", function() {
 					newtask.description = e.target.value;
 				}
 				break;
+
+
 
 
 		}

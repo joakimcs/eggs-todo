@@ -25,49 +25,67 @@ eggsTodo.class.View = function () {
 		}
 
 		// Declare vars
-		var appWrapper, 
+		/*
+		var appHeader, appWrapper, 
 		    listNode, listNodeHeader, listAdder, 
-		    taskWrapper, taskNode, taskCheckBox, taskDescription, taskAdder;
+		    taskWrapper, taskNode, taskCheckBox, taskDescription, taskAdder; */
+
+		// Create header
+		var appHeader = document.createElement('h1');
+		appHeader.innerHTML = "<span>Eggs todo</span>";
+		this.appNode.appendChild(appHeader);
+
+		var listNodeHeader = document.createElement('button');
+		listNodeHeader.className = 'listadder';
+		listNodeHeader.innerHTML = 'Add list';
+		appHeader.appendChild(listNodeHeader);
 
 		// Iterate and create nodes, content
-		appWrapper = document.createElement('ul');
+		var appWrapper = document.createElement('ul');
 		this.appNode.appendChild(appWrapper);
 
 		// Add list
-		listNode = document.createElement('li');
+		
+		var listNode = document.createElement('li');
 		listNode.id = "listadderwrapper";	
 		appWrapper.appendChild(listNode);
 		
-		listNodeHeader = document.createElement('button');
-		listNodeHeader.className = 'listadder';
-		listNodeHeader.innerHTML = 'Add list';
-		listNode.appendChild(listNodeHeader);
 
 		// Create nodes and attrbutes for lists
 		for (var i = 0, listLength = eggsTodo.app.lists.length; i < listLength; i++ ){
 
 			listNode = document.createElement('li');
-			listNode.id = 'list_' + eggsTodo.app.lists[i].id;	
+			listNode.id = 'list_' + eggsTodo.app.lists[i].id;
+			listNode.className = 'list';
 			appWrapper.appendChild(listNode);
 			
-			listNodeHeader = document.createElement('h2');
-			listNodeHeader.id = 'listdescription_' + eggsTodo.app.lists[i].id;
-			listNodeHeader.className = 'listdescription';
-			listNodeHeader.innerHTML = eggsTodo.app.lists[i].description;
+			var listNodeHeader = document.createElement('h2');
 			listNode.appendChild(listNodeHeader);
 
-			taskWrapper = document.createElement('ul');
+			var listNodeHeaderDescription = document.createElement('span');
+			listNodeHeaderDescription.id = 'listdescription_' + eggsTodo.app.lists[i].id;
+			listNodeHeaderDescription.className = 'listdescription';
+			listNodeHeaderDescription.innerHTML = eggsTodo.app.lists[i].description;
+			listNodeHeader.appendChild(listNodeHeaderDescription);
+
+			var listDeleter = document.createElement('button');
+			listDeleter.id = 'listdeleter_' + eggsTodo.app.lists[i].id;
+			listDeleter.className = 'listdeleter';
+			listDeleter.innerHTML = 'x';
+			listNodeHeader.appendChild(listDeleter);
+
+			var taskWrapper = document.createElement('ul');
 			taskWrapper.className = 'taskwrapper';
 			listNode.appendChild(taskWrapper);
 
 			for (var ii = 0, taskLength = eggsTodo.app.lists[i].tasks.length; ii < taskLength; ii++ ) {
 				
-				taskNode = document.createElement('li');
+				var taskNode = document.createElement('li');
 				taskNode.id = 'task_' + eggsTodo.app.lists[i].id + '_' + eggsTodo.app.lists[i].tasks[ii].id;
 				taskNode.className = 'task';
 				taskWrapper.appendChild(taskNode);
 
-				taskCheckBox = document.createElement('input');
+				var taskCheckBox = document.createElement('input');
 				taskCheckBox.id = 'checkbox_' + eggsTodo.app.lists[i].id + '_' + eggsTodo.app.lists[i].tasks[ii].id;
 				taskCheckBox.className = 'checkbox';
 				taskCheckBox.type = 'checkbox';
@@ -75,11 +93,17 @@ eggsTodo.class.View = function () {
 					
 				taskNode.appendChild(taskCheckBox);
 
-				taskDescription = document.createElement('span');
+				var taskDescription = document.createElement('span');
 				taskDescription.id = 'taskdescription_' + eggsTodo.app.lists[i].id + '_' + eggsTodo.app.lists[i].tasks[ii].id;
 				taskDescription.className = 'taskdescription';
 				taskNode.appendChild(taskDescription);
 				taskDescription.innerHTML = eggsTodo.app.lists[i].tasks[ii].description;
+
+				var taskDeleter = document.createElement('button');
+				taskDeleter.id = 'taskdeleter_' + eggsTodo.app.lists[i].id + '_' + eggsTodo.app.lists[i].tasks[ii].id;
+				taskDeleter.className = 'taskdeleter';
+				taskNode.appendChild(taskDeleter);
+				taskDeleter.innerHTML = 'x';
 
 			}
 
@@ -87,10 +111,10 @@ eggsTodo.class.View = function () {
 			taskNode = document.createElement('li');
 			taskWrapper.appendChild(taskNode);
 
-			taskAdder = document.createElement('a');
+			var taskAdder = document.createElement('a');
 			taskAdder.id = 'taskadder_' + eggsTodo.app.lists[i].id;
 			taskAdder.className = 'taskadder';
-			taskAdder.innerHTML = 'Add todo';
+			taskAdder.innerHTML = 'Add todo...';
 			taskNode.appendChild(taskAdder);
 
 		}
@@ -103,33 +127,48 @@ eggsTodo.class.View = function () {
 		
 		// console.log('renderList(' + id + ')');
 
+
 		// Check if list node exists, and refresh if so
 		if (listNode = document.getElementById('list_' + id)) {
-			
+	
+			// Clear list node
 			while (listNode.firstChild) {
 				listNode.removeChild(listNode.firstChild);
 			}
 
+			// Declare vars
+			// var listNodeHeader, taskWrapper, taskCheckBox, taskDescription, taskAdder;
+
+			// Get list item
 			var listItem = eggsTodo.app.getList(Number(id));
 		
-			listNodeHeader = document.createElement('h2');
-			listNodeHeader.id = 'listdescription_' + listItem.id;
-			listNodeHeader.className = 'listdescription';
-			listNodeHeader.innerHTML = listItem.description;
+			var listNodeHeader = document.createElement('h2');
 			listNode.appendChild(listNodeHeader);
 
-			taskWrapper = document.createElement('ul');
+			var listNodeHeaderDescription = document.createElement('span');
+			listNodeHeaderDescription.id = 'listdescription_' + listItem.id;
+			listNodeHeaderDescription.className = 'listdescription';
+			listNodeHeaderDescription.innerHTML = listItem.description;
+			listNodeHeader.appendChild(listNodeHeaderDescription);
+
+			var listDeleter = document.createElement('button');
+			listDeleter.id = 'listdeleter_' + listItem.id;
+			listDeleter.className = 'listdeleter';
+			listDeleter.innerHTML = 'x';
+			listNodeHeader.appendChild(listDeleter);
+
+			var taskWrapper = document.createElement('ul');
 			taskWrapper.className = 'taskwrapper';
 			listNode.appendChild(taskWrapper);
 
 			for (var ii = 0, taskLength = listItem.tasks.length; ii < taskLength; ii++ ) {
 				
-				taskNode = document.createElement('li');
+				var taskNode = document.createElement('li');
 				taskNode.id = 'task_' + listItem.id + '_' + listItem.tasks[ii].id;
 				taskNode.className = 'task';
 				taskWrapper.appendChild(taskNode);
 
-				taskCheckBox = document.createElement('input');
+				var taskCheckBox = document.createElement('input');
 				taskCheckBox.id = 'checkbox_' + listItem.id + '_' + listItem.tasks[ii].id;
 				taskCheckBox.className = 'checkbox';
 				taskCheckBox.type = 'checkbox';
@@ -137,22 +176,27 @@ eggsTodo.class.View = function () {
 					
 				taskNode.appendChild(taskCheckBox);
 
-				taskDescription = document.createElement('span');
+				var taskDescription = document.createElement('span');
 				taskDescription.id = 'taskdescription_' + listItem.id + '_' + listItem.tasks[ii].id;
 				taskDescription.className = 'taskdescription';
 				taskNode.appendChild(taskDescription);
 				taskDescription.innerHTML = listItem.tasks[ii].description;
 
+				var taskDeleter = document.createElement('button');
+				taskDeleter.id = 'taskdeleter_' + listItem.id + '_' + listItem.tasks[ii].id;
+				taskDeleter.className = 'taskdeleter';
+				taskNode.appendChild(taskDeleter);
+				taskDeleter.innerHTML = 'x';
 			}
 
 			// Add todo
-			taskNode = document.createElement('li');
+			var taskNode = document.createElement('li');
 			taskWrapper.appendChild(taskNode);
 
-			taskAdder = document.createElement('a');
+			var taskAdder = document.createElement('a');
 			taskAdder.id = 'taskadder_' + listItem.id;
 			taskAdder.className = 'taskadder';
-			taskAdder.innerHTML = 'Add todo';
+			taskAdder.innerHTML = 'Add todo...';
 			taskNode.appendChild(taskAdder);
 		}
 	}
@@ -169,7 +213,7 @@ eggsTodo.class.View = function () {
 
 			var taskItem = eggsTodo.app.getList(listId).getTask(taskId);
 
-			taskCheckBox = document.createElement('input');
+			var taskCheckBox = document.createElement('input');
 			taskCheckBox.id = 'checkbox_' + listId + '_' + taskId;
 			taskCheckBox.className = 'checkbox';
 			taskCheckBox.type = 'checkbox';
@@ -177,11 +221,17 @@ eggsTodo.class.View = function () {
 				
 			taskNode.appendChild(taskCheckBox);
 
-			taskDescription = document.createElement('span');
+			var taskDescription = document.createElement('span');
 			taskDescription.id = 'taskdescription_' + listId + '_' + taskId;
 			taskDescription.className = 'taskdescription';
 			taskNode.appendChild(taskDescription);
 			taskDescription.innerHTML = taskItem.description;
+
+			var taskDeleter = document.createElement('button');
+			taskDeleter.id = 'taskdeleter_' + listId + '_' + taskId;
+			taskDeleter.className = 'taskdeleter';
+			taskNode.appendChild(taskDeleter);
+			taskDeleter.innerHTML = 'x';
 		}
 	}
 }
@@ -215,6 +265,7 @@ eggsTodo.class.Input = function () {
 		input.focus();
 		input.select();
 		input.onblur = function(e) {
+			targetNode.style.display = 'inline';
 			this.parentNode.removeChild(this);
 		}
 	};
@@ -230,8 +281,8 @@ eggsTodo.class.Input = function () {
 		input.focus();
 		input.select();
 		input.onblur = function(e) {
+			targetNode.style.display = 'inline';
 			this.parentNode.removeChild(this);
-			targetNode.style.display = 'block';
 		}
 	};
 
@@ -247,7 +298,7 @@ eggsTodo.class.Input = function () {
 		input.select();
 		input.onblur = function(e) {
 			this.parentNode.removeChild(this);
-			targetNode.style.display = 'block';
+			targetNode.style.display = 'inline';
 		}
 	};
 

@@ -54,9 +54,11 @@ eggsTodo.class.App = function (appObject) {
 
 	this.removeList = function (listId) {
 		for (var i = 0, len = this.lists.length; i < len; i++) {
+		    console.log(this.lists[i].id + ' - ' + listId);
 		    if (this.lists[i].id === listId) {
+		    	var deletedList = this.lists.splice(i, 1);
 		    	eggsTodo.view.renderApp();
-		    	return this.lists.splice(i, 1);
+		    	return deletedList;
 		    }
 		}
 		return false;
@@ -159,8 +161,9 @@ eggsTodo.class.List = function (listObject) {
 	this.removeTask = function (taskId) {
 		for (var i = 0, len = this.tasks.length; i < len; i++) {
 		    if (this.tasks[i].id === taskId) {
+		    	var deletedTask = this.tasks.splice(i, 1);
 		    	eggsTodo.view.renderList(this.id);
-		    	return this.tasks.splice(i, 1);
+		    	return deletedTask;
 		    }
 		}
 		return false;
@@ -225,8 +228,6 @@ eggsTodo.class.Task = function (taskObject, parentListId) {
 	 * Constructor
 	 */
 
-	 
-	
 	// Create new ...
 	if (taskObject == undefined) {	
 		this._id = Date.now();
