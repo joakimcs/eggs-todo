@@ -118,15 +118,13 @@ eggsTodo.class.View = function () {
 			taskNode.appendChild(taskAdder);
 
 		}
-
-		// console.log('App rendered');
 		return true;
 	}
 
 	this.renderList = function (id) {
 		
 		// console.log('renderList(' + id + ')');
-
+		var listNode;
 
 		// Check if list node exists, and refresh if so
 		if (listNode = document.getElementById('list_' + id)) {
@@ -199,12 +197,14 @@ eggsTodo.class.View = function () {
 			taskAdder.innerHTML = 'Add todo...';
 			taskNode.appendChild(taskAdder);
 		}
+
 	}
 
 	this.renderTask = function (listId, taskId) {	
 
 		// console.log('Getting task_' + listId + '_' + taskId);
-		
+		var taskNode;
+
 		if (taskNode = document.getElementById('task_' + listId + '_' + taskId)) {
 
 			while (taskNode.firstChild) {
@@ -301,5 +301,4 @@ eggsTodo.class.Input = function () {
 			targetNode.style.display = 'inline';
 		}
 	};
-
 }

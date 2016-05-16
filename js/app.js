@@ -1,4 +1,7 @@
-// Event listeners/handlers
+/*
+ * App initialization and interaction routes
+ */
+
 document.addEventListener("DOMContentLoaded", function() {
 
 	/**
@@ -11,16 +14,13 @@ document.addEventListener("DOMContentLoaded", function() {
 	eggsTodo.app     = new eggsTodo.class.App();
 	eggsTodo.app.loadContent(eggsTodo.storage.getData());
 
-	// eggsTodo.app = new eggsTodo.class.App();
-	// Add appropriate listeners on interaction
-
-
 	/**
 	 * Interaction routes
 	 */
 
 	eggsTodo.view.appNode.onclick = function(e) {
-		console.log(e.target);
+		
+		// console.log(e.target);
 
 		var part, input;
 
@@ -39,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			case 'listdeleter' :	
 				part = e.target.id.split('_');
 				eggsTodo.app.removeList(Number(part[1]));
+
 				break;
 
 			case 'checkbox' :
@@ -114,7 +115,5 @@ document.addEventListener("DOMContentLoaded", function() {
 		}
 
 	}
-
-	
 
 });

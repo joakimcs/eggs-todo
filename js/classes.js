@@ -30,7 +30,7 @@ eggsTodo.class.App = function (appObject) {
 		for (var i = 0, len = appObject.length; i < len; i++) {
 			this.lists.push(new eggsTodo.class.List(appObject[i]));
 		}
-		eggsTodo.view.renderApp(this);	
+		eggsTodo.view.renderApp(this);
 	}
 
 	this.addList = function (listObject) {
@@ -41,6 +41,7 @@ eggsTodo.class.App = function (appObject) {
 		}
 		this.lists.unshift(listObject);
 		eggsTodo.view.renderApp();
+		eggsTodo.storage.storeData(eggsTodo.app);
 		return listObject;
 	}
 
@@ -58,7 +59,8 @@ eggsTodo.class.App = function (appObject) {
 		    if (this.lists[i].id === listId) {
 		    	var deletedList = this.lists.splice(i, 1);
 		    	eggsTodo.view.renderApp();
-		    	return deletedList;
+		    	eggsTodo.storage.storeData(eggsTodo.app);
+		     	return deletedList;
 		    }
 		}
 		return false;
@@ -98,6 +100,7 @@ eggsTodo.class.List = function (listObject) {
 			"set": function(value) { 
 				this._description = value;
 				eggsTodo.view.renderList(this.id);
+				eggsTodo.storage.storeData(eggsTodo.app);
 			}
         }
     });
@@ -126,7 +129,7 @@ eggsTodo.class.List = function (listObject) {
 
 		}
 		catch(err) {
-			console.log('List creation error. Empty list created');
+			console.log("List creation error. Empty list created");
 			this.tasks = [];
 			this._id = Date.now();
 			this._description = "";
@@ -146,6 +149,7 @@ eggsTodo.class.List = function (listObject) {
 		}	
 		this.tasks.push(taskObject);
 		eggsTodo.view.renderList(this.id);
+		eggsTodo.storage.storeData(eggsTodo.app);
 		return taskObject;
 	}
 	
@@ -163,6 +167,7 @@ eggsTodo.class.List = function (listObject) {
 		    if (this.tasks[i].id === taskId) {
 		    	var deletedTask = this.tasks.splice(i, 1);
 		    	eggsTodo.view.renderList(this.id);
+		    	eggsTodo.storage.storeData(eggsTodo.app);
 		    	return deletedTask;
 		    }
 		}
@@ -211,6 +216,7 @@ eggsTodo.class.Task = function (taskObject, parentListId) {
 			"set": function(value) { 
 				this._description = value;
 				eggsTodo.view.renderTask(this.parentListId, this.id);
+				eggsTodo.storage.storeData(eggsTodo.app);
 			}
         },
         "done": {
@@ -220,6 +226,7 @@ eggsTodo.class.Task = function (taskObject, parentListId) {
 			"set": function(value) { 
 				this._done = value;
 				eggsTodo.view.renderTask(this.parentListId, this.id);
+				eggsTodo.storage.storeData(eggsTodo.app);
 			}
         }
     });
@@ -267,52 +274,97 @@ eggsTodo.class.Storage = function () {
 
 	// TODO: Get real data
 
-	this.getData = function () {
-		return [
-			{
-				"id" : 123,
-				"description" : "Liste 1",
-				"tasks" : [
-					{
-						"id" : 123,
-						"description" : "Oppgave 1",
-						"done" : false
-					},
-					{
-						"id" : 124,
-						"description" : "Oppgave 2",
-						"done" : true
-					}
-				]
-			},
-			{
-				"id" : 124,
-				"description" : "Liste 2",
-				"tasks" : [
-					{
-						"id" : 123,
-						"description" : "Oppgave 1",
-						"done" : true
-					},
-					{
-						"id" : 124,
-						"description" : "Oppgave 2",
-						"done" : false
-					}
+	this.storeData = function (e) {
+		
+		var	lists = [];
 
-				]
-			},
-			{
-				"id" : 125,
-				"description" : "Liste 3",
-				"tasks" : [
-					{
-						"id" : 123,
-						"description" : "Oppgave 1",
-						"done" : false
-					}
-				]
+		console.log(e.lists);
+
+		for (var i = 0, listLen = e.lists.length; i < listLen; i++) {
+			lists[i] = {
+				"id"          : e.lists[i].id,
+				"description" : e.lists[i].description,
+				"tasks"       : []
 			}
-		]; // TODO: Get real data!
+			
+			for (var ii = 0, taskLen = e.lists[i].tasks.length; ii < taskLen; ii++) {
+				lists[i].tasks[ii] = {
+					"id"          : e.lists[i].tasks[ii].id,
+					"description" : e.lists[i].tasks[ii].description,
+					"done"        : e.lists[i].tasks[ii].done
+				}
+			}
+		}
+
+		localStorage.setItem("eggsTodoList", JSON.stringify(lists));
+	}
+
+	this.getData = function () {
+
+		var storedTodoList = localStorage.getItem("eggsTodoList");
+
+		console.log("storage.getData()")
+		console.log("raw: " + storedTodoList);
+
+
+		// If no data stored, get demo list
+		if (!storedTodoList || storedTodoList == "" || storedTodoList == "[]") {
+			console.log("Resetting data");
+			storedTodoList = [
+				{
+					"id" : 123,
+					"description" : "Liste 1",
+					"tasks" : [
+						{
+							"id" : 123,
+							"description" : "Oppgave 1",
+							"done" : false
+						},
+						{
+							"id" : 124,
+							"description" : "Oppgave 2",
+							"done" : true
+						}
+					]
+				},
+				{
+					"id" : 124,
+					"description" : "Liste 2",
+					"tasks" : [
+						{
+							"id" : 123,
+							"description" : "Oppgave 1",
+							"done" : true
+						},
+						{
+							"id" : 124,
+							"description" : "Oppgave 2",
+							"done" : false
+						}
+
+					]
+				},
+				{
+					"id" : 125,
+					"description" : "Liste 3",
+					"tasks" : [
+						{
+							"id" : 123,
+							"description" : "Oppgave 1",
+							"done" : false
+						}
+					]
+				}
+			]
+		}
+		// If stored object found
+		else {
+			storedTodoList = JSON.parse(storedTodoList);
+		}
+
+		console.log(storedTodoList);
+
+		return storedTodoList;	
+
 	}
 };

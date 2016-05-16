@@ -123,11 +123,12 @@ QUnit.test( "Overall data model test", function( assert ) {
 
 });
 
+/**
+ * Interaction tests
+ */
 
-
-/*
 QUnit.test( "UI interaction test", function( assert ) {
 
 });
-*/
+
 
