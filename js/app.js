@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 		var part, input;
 
+		
+
 		switch (e.target.className) {
 			
 			// List addition
